@@ -1,0 +1,87 @@
+✔ Scenario: Add a measurement with valid (numeric) values
+✔ Scenario: Cannot add a measurement with invalid values
+✔ Scenario: Cannot add a measurement without a timestamp
+✔ Scenario: Get a specific measurement
+✔ Scenario: Get a measurement that does not exist
+✔ Scenario: Get stats for a well-reported metric
+✔ Scenario: Get stats for a sparsely reported metric
+✔ Scenario: Get stats for a metric that has never been reported
+✔ Scenario: Get stats for more than one metric
+✔ Scenario: Get stats for invalid date range
+✔ Scenario: Get stats for date range not recorded
+✔ Scenario: Get stats when metric is not provided
+✔ Scenario: Get stats when stat is not provided
+
+13 scenarios (13 passed)
+42 steps (42 passed)
+0m17.878s
+
+═════ begin new scenarios ═════
+
+Scenario: Get stats for invalid date range
+  Given I have submitted new measurements as follows:
+      | timestamp                  | temperature | dewPoint |
+      | "2015-09-01T16:00:00.000Z" | 27.1        | 16.9     |
+      | "2015-09-01T16:10:00.000Z" | 27.3        |          |
+      | "2015-09-01T16:20:00.000Z" | 27.5        | 17.1     |
+      | "2015-09-01T16:30:00.000Z" | 27.4        | 17.3     |
+      | "2015-09-01T16:40:00.000Z" | 27.2        |          |
+      | "2015-09-01T17:00:00.000Z" | 28.1        | 18.3     |
+        When I get stats with parameters:
+      | param        | value                    |
+      | stat         | average                  |
+      | metric       | precipitation            |
+      | fromDateTime | 2015-10-01T16:00:00.000Z |
+      | toDateTime   | 2015-09-01T17:00:00.000Z |
+        Then the response body is an empty array
+
+Scenario: Get stats for date range not recorded
+  Given I have submitted new measurements as follows:
+      | timestamp                  | temperature | dewPoint |
+      | "2015-09-01T16:00:00.000Z" | 27.1        | 16.9     |
+      | "2015-09-01T16:10:00.000Z" | 27.3        |          |
+      | "2015-09-01T16:20:00.000Z" | 27.5        | 17.1     |
+      | "2015-09-01T16:30:00.000Z" | 27.4        | 17.3     |
+      | "2015-09-01T16:40:00.000Z" | 27.2        |          |
+      | "2015-09-01T17:00:00.000Z" | 28.1        | 18.3     |
+        When I get stats with parameters:
+      | param        | value                    |
+      | stat         | average                  |
+      | metric       | precipitation            |
+      | fromDateTime | 2015-10-01T16:00:00.000Z |
+      | toDateTime   | 2015-10-01T17:00:00.000Z |
+        Then the response body is an empty array
+
+Scenario: Get stats when metric is not provided
+  Given I have submitted new measurements as follows:
+      | timestamp                  | temperature | dewPoint |
+      | "2015-09-01T16:00:00.000Z" | 27.1        | 16.9     |
+      | "2015-09-01T16:10:00.000Z" | 27.3        |          |
+      | "2015-09-01T16:20:00.000Z" | 27.5        | 17.1     |
+      | "2015-09-01T16:30:00.000Z" | 27.4        | 17.3     |
+      | "2015-09-01T16:40:00.000Z" | 27.2        |          |
+      | "2015-09-01T17:00:00.000Z" | 28.1        | 18.3     |
+        When I get stats with parameters:
+      | param        | value                    |
+      | stat         | average                  |
+      | fromDateTime | 2015-10-01T16:00:00.000Z |
+      | toDateTime   | 2015-10-01T17:00:00.000Z |
+        Then the response has a status code of 500
+
+Scenario: Get stats when stat is not provided
+  Given I have submitted new measurements as follows:
+      | timestamp                  | temperature | dewPoint |
+      | "2015-09-01T16:00:00.000Z" | 27.1        | 16.9     |
+      | "2015-09-01T16:10:00.000Z" | 27.3        |          |
+      | "2015-09-01T16:20:00.000Z" | 27.5        | 17.1     |
+      | "2015-09-01T16:30:00.000Z" | 27.4        | 17.3     |
+      | "2015-09-01T16:40:00.000Z" | 27.2        |          |
+      | "2015-09-01T17:00:00.000Z" | 28.1        | 18.3     |
+        When I get stats with parameters:
+      | param        | value                    |
+      | metric       | temperature              |
+      | fromDateTime | 2015-10-01T16:00:00.000Z |
+      | toDateTime   | 2015-10-01T17:00:00.000Z |
+        Then the response has a status code of 500
+
+══════ end new scenarios ══════
